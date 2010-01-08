@@ -1,0 +1,5 @@
+Project Kuching is a XMPP library in Actionscript 3, when Kuching is a city in the east Malaysia.
+
+This project does not use any code of Flex Framework, so you can build a lightweight XMPP-based software in pure Actionscript 3.
+
+This is not a fully implemented XMPP library. Only RFC 3920 and parts of RFC 3921 are implemented.
