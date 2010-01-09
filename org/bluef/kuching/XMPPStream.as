@@ -31,22 +31,21 @@ package org.bluef.kuching {
 		private var _sessioned:Boolean;
 		
 		//singleton mode
-		public function XMPPStream(user:JID, pw:String, server:String, port:uint, domain:String, resource:String = 'HOME') {			
-			init(user, pw, server, port, domain, resource);
+		public function XMPPStream(user:JID, pw:String, server:String, port:uint = 5222) {			
+			init(user, pw, server, port);
 		}
 		
 		//init the XMPPStream with username and password provided by Env
-		private function init(user:JID, pw:String, server:String, port:uint, domain:String, resource:String = 'HOME'):void {
+		private function init(user:JID, pw:String, server:String, port:uint = 5222):void {
 			_authed = false;
 			_binded = false;
 			_rostered = false;
 			_sessioned = false;
 			
-			//connect to host		
-			_dp = new XMPPDataPaster(server, port, domain, resource);
+			_dp = new XMPPDataPaster(server, port);
 			
 			_user = user.clone();			
-			_auth = new XMPPAuth(_user.node, pw, _dp);
+			_auth = new XMPPAuth(_user, pw, _dp);
 			
 			configureListeners();
 		}
@@ -73,7 +72,8 @@ package org.bluef.kuching {
 		
 		//start a new stream by sending begin-xmlstream sanza
 		private function onChannelState(e:Event):void {
-			dispatchEvent(new Event(e.type,true));
+			_dp.confirmConnect(_user.domain);
+			dispatchEvent(new Event(e.type, true));
 		}
 		
 		private function onData(ee:DataEvent):void {
@@ -361,13 +361,13 @@ package org.bluef.kuching {
 		//bind the resource after auth
 		private function bindResource():void {
 			var packet:IQPacket = new IQPacket();
-			packet.to = new JID(_dp.domain);
+			packet.to = new JID(_user.domain);
 			packet.ptype = IQPacket.TYPE_SET;
 			var xmlns:Object = new Object();
 			xmlns.tag = "xmlns";
 			xmlns.value = IQPacket.BIND_RESOURCE;
 			packet.addXMLChild("", "bind", '', xmlns);
-			packet.addXMLChild("bind", "resource", _dp.resource);
+			packet.addXMLChild("bind", "resource", _user.resource);
 			
 			sendData(packet.toXMLString());
 			_binded = true;
@@ -377,7 +377,7 @@ package org.bluef.kuching {
 		private function setSession():void {
 			var p:IQPacket = new IQPacket();
 			p.ptype = IQPacket.TYPE_SET;
-			p.to = new JID(_dp.domain);
+			p.to = new JID(_user.domain);
 			var xn:Object = new Object();
 			xn.tag = "xmlns";
 			xn.value = "urn:ietf:params:xml:ns:xmpp-session";
@@ -389,7 +389,7 @@ package org.bluef.kuching {
 		//get roster
 		public function getRoster():void {
 			var packet:IQPacket = new IQPacket();
-			packet.to = new JID(_dp.domain);
+			packet.to = new JID(_user.domain);
 			packet.ptype = IQPacket.TYPE_GET;
 			var xmlns:Object = new Object();
 			xmlns.tag = "xmlns";
@@ -398,12 +398,12 @@ package org.bluef.kuching {
 			sendData(packet.toXMLString());
 			_rostered = true;
 			
-			sendData("<presence type='probe' from='" + JID(_user).node + "@" + _dp.domain + "/" + _dp.resource + "' to='" + _dp.domain + "'/>");
+			sendData("<presence type='probe' from='" + JID(_user).node + "@" + _user.domain + "/" + _user.resource + "' to='" + _user.domain + "'/>");
 		}
 		
 		public function tellBroatcast():void {
 			var packet:IQPacket = new IQPacket();
-			packet.to = new JID(_dp.domain);
+			packet.to = new JID(_user.domain);
 			packet.ptype = IQPacket.TYPE_GET;
 			var xmlns:Object = new Object();
 			xmlns.tag = "xmlns";

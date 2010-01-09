@@ -54,7 +54,7 @@ package org.bluef.kuching {
 		
 		//send data
 		public function sendData(s:String):void {
-			trace("SENT>>", s, "\n");
+			//trace("SENT>>", s, "\n");
 			//_timer.reset();
 			_socket.writeUTFBytes(s);
 			_socket.flush();
@@ -77,7 +77,7 @@ package org.bluef.kuching {
 		//when new data is available
 		private function onRead(e:ProgressEvent):void {
 			_rawXML = _socket.readUTFBytes(_socket.bytesAvailable);
-			trace("[RECEIVED]>>", _rawXML, "\n");
+			//trace("[RECEIVED]>>", _rawXML, "\n");
 			
 			_pattern = /\<stream:(.*?)\>/;
 			_rawXML = _rawXML.replace(_pattern, '<stream:$1 xmlns:stream="http://etherx.jabber.org/streams">');

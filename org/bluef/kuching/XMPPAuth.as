@@ -6,6 +6,7 @@ package org.bluef.kuching {
 	import com.adobe.crypto.MD5;
 	
 	import org.bluef.kuching.XMPPDataPaster;
+	import org.bluef.kuching.utils.JID;
 	import org.bluef.kuching.utils.Base64;
 	import org.bluef.kuching.utils.RandomString;
 	
@@ -16,12 +17,12 @@ package org.bluef.kuching {
 		private var _authSent:Boolean;
 		private var _dp:XMPPDataPaster;
 		
-		private var _username:String;
+		private var _user:JID;
 		private var _password:String;
 		
 		//constructor.take over channel to complete auth course
-		public function XMPPAuth(usr:String, pw:String, dp:XMPPDataPaster):void {
-			_username = usr;
+		public function XMPPAuth(usr:JID, pw:String, dp:XMPPDataPaster):void {
+			_user = usr;
 			_password = pw;
 			
 			_dp = dp;
@@ -94,15 +95,15 @@ package org.bluef.kuching {
 			
 			//generate random conce for response
 			var cnonce:String = RandomString.generateRandomString(64);
-			var user_pw_hash:String = MD5.hash(_username + ":" + realmS + ":" + _password);
+			var user_pw_hash:String = MD5.hash(_user.node + ":" + realmS + ":" + _password);
 			//only with the help of ByteArray will ha1 get the correct value
 			var ba:ByteArray = hex2digest(user_pw_hash);
 			ba.writeUTFBytes(":" + nonceS + ":" + cnonce);
 			//use hashBinary to hash a ByteArray
 			var ha1:String = MD5.hashBinary(ba);
-			var ha2:String = MD5.hash("AUTHENTICATE:xmpp/" + _dp.domain);
+			var ha2:String = MD5.hash("AUTHENTICATE:xmpp/" + _user.domain);
 			var response:String = MD5.hash(ha1 + ":" + nonceS + ":00000001:" + cnonce + ":auth:" + ha2);
-			var responseBody:String = Base64.encode('username="' + _username + '",realm="' + _dp.domain + '",nonce="'+ nonceS + '",cnonce="' + cnonce + '",nc=00000001,qop=auth,digest-uri="xmpp/' + _dp.domain + '",charset=utf-8,response=' + response);
+			var responseBody:String = Base64.encode('username="' + _user.node + '",realm="' + _user.domain + '",nonce="'+ nonceS + '",cnonce="' + cnonce + '",nc=00000001,qop=auth,digest-uri="xmpp/' + _user.domain + '",charset=utf-8,response=' + response);
 			var resultxml:XML = <response xmlns="urn:ietf:params:xml:ns:xmpp-sasl"/>;
 			resultxml.appendChild(responseBody);
 			_dp.sendData(resultxml.toXMLString());
