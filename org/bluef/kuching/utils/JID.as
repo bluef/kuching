@@ -1,4 +1,4 @@
-﻿package org.bluef.kuching.utils {	
+package org.bluef.kuching.utils {	
 	public class JID {
 		private var _jidString:String;
     	private var _node:String;

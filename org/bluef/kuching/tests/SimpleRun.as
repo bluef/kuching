@@ -1,8 +1,8 @@
-﻿/*
+/*
    SimpleRun.as
    kuching
    
-   To try this test you need to change the settings to fit your account, 
+   To try this test you need to change some variables to fit your setting, 
    including the jid, password, server address, domain and resource.
    
    Created by bluef on 2010-01-09.

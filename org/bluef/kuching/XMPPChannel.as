@@ -1,4 +1,4 @@
-﻿package org.bluef.kuching {
+package org.bluef.kuching {
 	import flash.net.Socket;
 	import flash.utils.Timer;
 	import flash.events.EventDispatcher;

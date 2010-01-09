@@ -1,4 +1,4 @@
-﻿package org.bluef.kuching {
+package org.bluef.kuching {
 	import flash.events.EventDispatcher;
 	import flash.events.Event;
 	import org.bluef.kuching.events.DataEvent;

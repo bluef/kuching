@@ -1,4 +1,4 @@
-﻿package org.bluef.kuching.packets {
+package org.bluef.kuching.packets {
 	import org.bluef.kuching.packets.AbstractPacket;
 	import org.bluef.kuching.utils.JID;
 	

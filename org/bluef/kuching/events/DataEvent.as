@@ -1,4 +1,4 @@
-﻿package org.bluef.kuching.events {
+package org.bluef.kuching.events {
 	import flash.events.Event;
 	public class DataEvent extends Event {
 		public static const STREAM:String = "data_stream";

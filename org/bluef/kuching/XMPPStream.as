@@ -1,4 +1,4 @@
-﻿/*
+/*
    XMPPStream.as
    kuching
    

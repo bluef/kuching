@@ -1,4 +1,4 @@
-﻿package org.bluef.kuching.events{
+package org.bluef.kuching.events{
 	import flash.events.Event;
 	
 	public class ChannelStateEvent extends Event {
