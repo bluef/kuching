@@ -2,12 +2,14 @@
 	import flash.events.EventDispatcher;
 	import flash.events.Event;
 	import flash.utils.ByteArray;
+	
 	import com.adobe.crypto.MD5;
+	
 	import org.bluef.kuching.XMPPDataPaster;
 	import org.bluef.kuching.utils.Base64;
 	import org.bluef.kuching.utils.RandomString;
 	
-	public class XMPPAuth extends EventDispatcher {
+	public final class XMPPAuth extends EventDispatcher {
 		public static const AUTH_SUCCESS:String = "xmpp_auth_success";
 		public static const AUTH_FAILURE:String = "xmpp_auth_failure";
 		
@@ -32,7 +34,7 @@
 		public function auth(xmlsanza:XML):void {
 			
 			//check if the auth request sanza sent
-			if(!_authSent){
+			if (!_authSent) {
 				trace("auth:begin authing");
 				if (xmlsanza.name().localName == "features" || xmlsanza.name().localName == "stream") {
 					//anounce using digest-md5 method to authenticate
@@ -40,7 +42,7 @@
 					_authSent = true;
 					_dp.sendData(returnxml.toXMLString());
 				}
-			}else{
+			} else {
 				//trace("2");
 				//trace("xmlsanza.name().localName =",xmlsanza.name().localName);
 				//filter data to complete the flow
@@ -100,7 +102,7 @@
 			var ha1:String = MD5.hashBinary(ba);
 			var ha2:String = MD5.hash("AUTHENTICATE:xmpp/" + _dp.domain);
 			var response:String = MD5.hash(ha1 + ":" + nonceS + ":00000001:" + cnonce + ":auth:" + ha2);
-			var responseBody:String = Base64.encode('username="' + _username + '",realm="' + _dp.domain + '",nonce="'+ nonceS + '",cnonce="' + cnonce + '",nc=00000001,qop=auth,digest-uri="xmpp/' + _dp.domain + '",charset=utf-8,response='+response);
+			var responseBody:String = Base64.encode('username="' + _username + '",realm="' + _dp.domain + '",nonce="'+ nonceS + '",cnonce="' + cnonce + '",nc=00000001,qop=auth,digest-uri="xmpp/' + _dp.domain + '",charset=utf-8,response=' + response);
 			var resultxml:XML = <response xmlns="urn:ietf:params:xml:ns:xmpp-sasl"/>;
 			resultxml.appendChild(responseBody);
 			_dp.sendData(resultxml.toXMLString());

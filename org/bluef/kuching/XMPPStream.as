@@ -9,27 +9,21 @@
 package org.bluef.kuching {
 	import flash.events.EventDispatcher;
 	import flash.events.Event;
+	
 	import org.bluef.kuching.events.*;
 	import org.bluef.kuching.utils.*;
 	import org.bluef.kuching.packets.*;
-	import org.bluef.kuching.XMPPConfig;
 	import org.bluef.kuching.XMPPAuth;
 	import org.bluef.kuching.XMPPDataPaster;
 	
-	public class XMPPStream extends EventDispatcher{
-		public static const DISCONNECT:String = "disconnect";
-		public static const CONNECT:String = "connect";
-		public static const AUTH_SUCCESS:String = "xmpp_auth_success";
-		public static const AUTH_FAILURE:String = "xmpp_auth_failure";
+	public final class XMPPStream extends EventDispatcher{
 		private static const CHAT_NS:Namespace = new Namespace("http://jabber.org/protocol/chatstates");
-		
-		public static const AAA:String = "aaa";
 		
 		private var _user:JID;
 		private var _pw:String;
+		
 		private var _auth:XMPPAuth;
 		private var _dp:XMPPDataPaster;
-		private var _id:String;
 		
 		private var _authed:Boolean;
 		private var _binded:Boolean;
@@ -37,23 +31,21 @@ package org.bluef.kuching {
 		private var _sessioned:Boolean;
 		
 		//singleton mode
-		public function XMPPStream(user:JID, pw:String, server:String, port:uint, domain:String, resource:String = 'HOME') {
+		public function XMPPStream(user:JID, pw:String, server:String, port:uint, domain:String, resource:String = 'HOME') {			
+			init(user, pw, server, port, domain, resource);
+		}
+		
+		//init the XMPPStream with username and password provided by Env
+		private function init(user:JID, pw:String, server:String, port:uint, domain:String, resource:String = 'HOME'):void {
 			_authed = false;
 			_binded = false;
 			_rostered = false;
 			_sessioned = false;
 			
-			init(user, pw, server, port, domain, resource);
-		}
-		
-		//init the XMPPStream with username and password provided by Env
-		public function init(user:JID, pw:String, server:String, port:uint, domain:String, resource:String = 'HOME'):void {
 			//connect to host		
 			_dp = new XMPPDataPaster(server, port, domain, resource);
 			
-			_user = user.clone();
-			connect();
-			//and start to authenticate
+			_user = user.clone();			
 			_auth = new XMPPAuth(_user.node, pw, _dp);
 			
 			configureListeners();
@@ -64,7 +56,6 @@ package org.bluef.kuching {
 			_dp.connect();
 		}
 		
-		
 		//disconnect from host after send a end-xmlstream sanza
 		public function disconnect():void {
 			_dp.disconnect();
@@ -72,7 +63,6 @@ package org.bluef.kuching {
 		
 		//configure event listener of all the sub modules
 		private function configureListeners():void {
-			
 			_dp.addEventListener(DataEvent.DATA, onData);
 			_dp.addEventListener(ChannelStateEvent.CONNECT, onChannelState);
 			_dp.addEventListener(ChannelStateEvent.DISCONNECT, onChannelState);
@@ -129,14 +119,14 @@ package org.bluef.kuching {
 		//set auth state
 		private function onAuthSuc(e:Event):void {
 			_authed = true;
-			dispatchEvent(new Event(AUTH_SUCCESS,true));
+			dispatchEvent(new XMPPEvent(XMPPEvent.AUTH_SUCCESS));
 			
 			bindResource();
 		}
 		
 		private function onAuthFail(e:Event):void {
 			_authed = false;
-			dispatchEvent(new Event(AUTH_FAILURE,true));
+			dispatchEvent(new XMPPEvent(XMPPEvent.AUTH_FAILURE));
 		}
 		
 		public function sendData(sanza:String):void {
@@ -145,7 +135,7 @@ package org.bluef.kuching {
 			_dp.sendData(sanza);
 		};
 		
-		//create diffrent sub-class packet by check xmlsanza's localname 
+		//create packet by checking the localname of the sanza 
 		private function filterPacket(xmlsanza:XML):void {
 			//dispatch the raw data of incoming sanza
 			dispatchEvent(new XMPPEvent(XMPPEvent.RAW, XML(xmlsanza).toXMLString()));
@@ -160,7 +150,6 @@ package org.bluef.kuching {
 					break;
 					
 				case "iq":
-					//trace("IQ");
 					pasteIQSanza(XML(xmlsanza));
 					break;
 					
@@ -177,25 +166,26 @@ package org.bluef.kuching {
 			} else {
 				switch (XML(xmlsanza).@type) {
 					case 'chat':
-						pasteChatSanza(xmlsanza);
+						pasteChatSanza(XML(xmlsanza));
 						break;
 						
 					case 'normal' :
-						pasteChatSanza(xmlsanza);
+						pasteChatSanza(XML(xmlsanza));
 						break;
 						
 					case 'error':
+						pasteErrorSanza(XML(xmlsanza));
 						break;
 						
 					case 'groupchat':
 						break;
 						
 					case 'headline':
-						pasteChatSanza(xmlsanza);
+						pasteChatSanza(XML(xmlsanza));
 						break;
 						
 					default :
-						pasteChatSanza(xmlsanza);
+						pasteChatSanza(XML(xmlsanza));
 						break;
 				}
 			}			
@@ -334,7 +324,7 @@ package org.bluef.kuching {
 			}
 			
 			dispatchEvent(new XMPPEvent(XMPPEvent.ERROR, errMsg)); //XMPPEvent.ERROR, errMsg
-			
+		
 		};
 		
 		//public method for creating a new msg packet

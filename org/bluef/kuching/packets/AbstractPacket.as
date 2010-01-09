@@ -1,5 +1,5 @@
 ﻿package org.bluef.kuching.packets {
-	import grassland.core.utils.JID;
+	import org.bluef.kuching.utils.JID;
 	
 	public class AbstractPacket {
 		public static const XMLNS:String = "jabber:client";
@@ -25,6 +25,7 @@
 					
 				default :
 					throw new Error("Unexpected sanza type" + ptype);
+					break;
 			}
 			_xmlsanza.@xmlns = XMLNS;
 		}

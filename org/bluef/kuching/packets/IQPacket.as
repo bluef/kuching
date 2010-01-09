@@ -1,6 +1,6 @@
 ﻿package org.bluef.kuching.packets {
 	import org.bluef.kuching.packets.AbstractPacket;
-	import grassland.core.utils.JID;
+	import org.bluef.kuching.utils.JID;
 	
 	public class IQPacket extends AbstractPacket {
 		

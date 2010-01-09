@@ -7,7 +7,7 @@
 		private var _data:MessagePacket;
 		
 		public function MessageEvent(s:MessagePacket) {
-			super(MessageEvent.RECEIVED, true, false);
+			super(RECEIVED, true, false);
 			_data = s;
 		}
 		

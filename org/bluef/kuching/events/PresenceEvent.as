@@ -7,7 +7,7 @@
 		private var _data:PresencePacket;
 		
 		public function PresenceEvent(s:PresencePacket) {
-			super(PresenceEvent.RECEIVED, true, false);
+			super(RECEIVED, true, false);
 			_data = s;
 		}
 		

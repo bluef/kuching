@@ -6,7 +6,7 @@
 	import org.bluef.kuching.events.ChannelEvent;
 	import org.bluef.kuching.XMPPChannel;
 	
-	public class XMPPDataPaster extends EventDispatcher {
+	public final class XMPPDataPaster extends EventDispatcher {
 		public static const DISCONNECT:String = "disconnect";
 		public static const CONNECT:String = "connect";
 		private var _channel = XMPPChannel;
@@ -33,7 +33,7 @@
 		}
 		
 		private function onConnect(e:ChannelStateEvent):void {
-			trace("dataPaster:channel conected");
+			trace("DATA-PASTER: CHANNEL CONECTED");
 			dispatchEvent(e);
 			_channel.sendData("<stream:stream to='" + _domain + "' xmlns='jabber:client' xmlns:stream='http://etherx.jabber.org/streams' version='1.0'>")
 		}

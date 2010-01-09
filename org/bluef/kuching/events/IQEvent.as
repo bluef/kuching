@@ -6,17 +6,17 @@
 		public static var RECEIVED:String = "IQ_Received";
 		private var _data:IQPacket;
 		
-		public function IQEvent(s:IQPacket){
+		public function IQEvent(s:IQPacket) {
 			//trace("IQEvent :",s.content.toXMLString());
-			super(IQEvent.RECEIVED, true, false);
+			super(RECEIVED, true, false);
 			_data = s;
 		}
 		
-		public function get data():IQPacket{
+		public function get data():IQPacket {
 			return _data;
 		}
 		
-		public function set data( s:IQPacket ):void{
+		public function set data( s:IQPacket ):void {
 			_data = s;
 		}
 	}

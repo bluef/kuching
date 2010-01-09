@@ -1,6 +1,6 @@
 ﻿package org.bluef.kuching.packets {
 	import org.bluef.kuching.packets.AbstractPacket;
-	import grassland.core.utils.JID;
+	import org.bluef.kuching.utils.JID;
 	
 	public class MessagePacket extends AbstractPacket {
 		public static const TYPE_NORMAL:String = "normal";

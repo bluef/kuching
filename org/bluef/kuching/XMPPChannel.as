@@ -1,13 +1,13 @@
 ﻿package org.bluef.kuching {
-	import flash.utils.Timer;
-	import flash.events.TimerEvent;
 	import flash.net.Socket;
+	import flash.utils.Timer;
 	import flash.events.EventDispatcher;
 	import flash.events.Event;
 	import flash.events.ProgressEvent;
 	import flash.events.IOErrorEvent;
 	import flash.events.SecurityErrorEvent;
 	import flash.events.TimerEvent;
+	
 	import org.bluef.kuching.events.ChannelStateEvent;
 	import org.bluef.kuching.events.ChannelEvent;
 	
@@ -21,13 +21,13 @@
 		private var _o:Array;
 		private var _expireTag:uint;
 		
-		public function XMPPChannel(host:String, pport:uint):void {
-			init(host, pport);
+		public function XMPPChannel(host:String, port:uint):void {
+			init(host, port);
 		}
 		
-		private function init(host:String, pport:uint):void {
+		private function init(host:String, port:uint):void {
 			_host = host;
-			_port = pport;
+			_port = port;
 			
 			_expireTag = 0;
 			
